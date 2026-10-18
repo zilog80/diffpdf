@@ -1,7 +1,15 @@
 project(
     'diffpdf', 'cpp',
     version: '3.0.0',
-    default_options: ['cpp_std=c++17', 'warning_level=0']    
+    default_options: [
+        'cpp_std=c++17',
+        'werror=true',
+    ]    
+)
+
+add_project_arguments(
+  '-Wno-sfinae-incomplete',
+  language: 'cpp',
 )
 
 qt6 = import('qt6')

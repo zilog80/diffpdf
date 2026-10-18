@@ -181,7 +181,7 @@ const QStringList droppedFilenames(const QMimeData *mimeData)
             filenames[i] = strippedFilename(filenames.at(i));
     }
     else {
-        foreach (const QUrl &url, mimeData->urls())
+        for (const QUrl &url : mimeData->urls())
             filenames << strippedFilename(url.toString());
     }
     return filenames;
