@@ -19,7 +19,7 @@
 #else
 #include <tr1/memory>
 #endif
-#include <poppler-qt4.h>
+#include <poppler-qt6.h>
 #include <QBrush>
 #include <QList>
 #include <QMainWindow>
@@ -101,8 +101,8 @@ private:
     void writeLine(const QString &text);
     void writeError(const QString &text);
     PdfDocument getPdf(const QString &filename);
-    QList<int> getPageList(int which, PdfDocument pdf);
-    Difference getTheDifference(PdfPage page1, PdfPage page2);
+    QList<int> getPageList(int which, const PdfDocument& pdf);
+    Difference getTheDifference(const PdfPage& page1, const PdfPage& page2);
     void paintOnImage(const QPainterPath &path, QImage *image);
     const QPair<QPixmap, QPixmap> populatePixmaps(const PdfDocument &pdf1,
             const PdfPage &page1, const PdfDocument &pdf2,

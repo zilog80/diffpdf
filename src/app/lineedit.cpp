@@ -11,17 +11,17 @@
 */
 
 #include "generic.hpp"
-#include "label.hpp"
+#include "lineedit.hpp"
 #include <QDragEnterEvent>
 #include <QDragEnterEvent>
-#include <QMouseEvent>
+#include <QMimeData>
 
-Label::Label(QWidget *parent) : QLabel(parent)
+LineEdit::LineEdit(QWidget *parent) : QLineEdit(parent)
 {
     setAcceptDrops(true);
 }
 
-void Label::dragEnterEvent(QDragEnterEvent *event)
+void LineEdit::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
     if (mimeData->hasFormat("text/plain") ||
@@ -30,18 +30,10 @@ void Label::dragEnterEvent(QDragEnterEvent *event)
 }
 
 
-void Label::dropEvent(QDropEvent *event)
+void LineEdit::dropEvent(QDropEvent *event)
 {
     QStringList filenames = droppedFilenames(event->mimeData());
     if (!filenames.isEmpty())
         emit filenamesDropped(filenames);
     event->acceptProposedAction();
-}
-
-
-void Label::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        emit clicked(event->pos());
-    QLabel::mousePressEvent(event);
 }

@@ -44,6 +44,8 @@
 #include <QSettings>
 #include <QSpinBox>
 #include <QSplitter>
+#include <QElapsedTimer>
+#include <QRegularExpression>
 
 
 MainWindow::MainWindow(const Debug debug,
@@ -1249,11 +1251,7 @@ PdfDocument MainWindow::getPdf(const QString &filename)
     else if (pdf->isLocked()) {
         QMessageBox::warning(this, tr("DiffPDF — Error"),
                 tr("Cannot read a locked PDF ('%1').").arg(filename));
-#if QT_VERSION >= 0x040600
-        pdf.clear();
-#else
         pdf.reset();
-#endif
     }
     return pdf;
 }
@@ -1312,14 +1310,14 @@ void MainWindow::writeError(const QString &text)
 }
 
 
-QList<int> MainWindow::getPageList(int which, PdfDocument pdf)
+QList<int> MainWindow::getPageList(int which, const PdfDocument& pdf)
 {
     // Poppler has 0-based page numbers; the UI has 1-based page numbers
     QLineEdit *pagesEdit = (which == 1 ? pages1LineEdit : pages2LineEdit);
     bool error = false;
     QList<int> pages;
     QString page_string = pagesEdit->text();
-    page_string = page_string.replace(QRegExp("\\s+"), "");
+    page_string = page_string.replace(QRegularExpression("\\s+"), "");
     QStringList page_list = page_string.split(",");
     bool ok;
     foreach (const QString &page, page_list) {
@@ -1387,11 +1385,11 @@ void MainWindow::compare()
     }
 
     comparePrepareUi();
-    QTime time;
-    time.start();
+    QElapsedTimer timer;
+    timer.start();
     const QPair<int, int> pair = comparePages(filename1, pdf1, filename2,
                                               pdf2);
-    compareUpdateUi(pair, time.elapsed());
+    compareUpdateUi(pair, timer.elapsed());
 }
 
 
@@ -1501,17 +1499,17 @@ void MainWindow::compareUpdateUi(const QPair<int, int> &pair,
 }
 
 
-MainWindow::Difference MainWindow::getTheDifference(PdfPage page1,
-                                                    PdfPage page2)
+MainWindow::Difference MainWindow::getTheDifference(const PdfPage& page1,
+                                                    const PdfPage& page2)
 {
     QRectF rect;
     if (marginsGroupBox->isChecked())
         rect = pointRectForMargins(page1->pageSize());
     const TextBoxList list1 = getTextBoxes(page1, rect);
     const TextBoxList list2 = getTextBoxes(page2, rect);
-    if (list1.count() != list2.count())
+    if (list1.size() != list2.size())
         return TextualDifference;
-    for (int i = 0; i < list1.count(); ++i)
+    for (int i = 0; i < list1.size(); ++i)
         if (list1[i]->text() != list2[i]->text())
             return TextualDifference;
 
@@ -1685,8 +1683,13 @@ void MainWindow::saveAsPdf(const int start, const int end,
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setColorMode(QPrinter::Color);
     printer.setCreator(tr("DiffPDF"));
-    printer.setOrientation(savePages == SaveBothPages
-            ? QPrinter::Landscape : QPrinter::Portrait);
+
+    QPageLayout layout;
+    layout.setPageSize(QPageSize(QPageSize::A4));
+    layout.setOrientation(savePages == SaveBothPages
+            ? QPageLayout::Landscape : QPageLayout::Portrait);
+    printer.setPageLayout(layout);
+
     QPainter painter(&printer);
     painter.setRenderHints(QPainter::Antialiasing|
             QPainter::TextAntialiasing|QPainter::SmoothPixmapTransform);
@@ -1802,7 +1805,7 @@ void MainWindow::showZones()
 void MainWindow::showZones(const int Width, const TextBoxList &list,
                            QLabel *label)
 {
-    if (!label || !label->pixmap() || label->pixmap()->isNull())
+    if (!label || !label->pixmap() || label->pixmap().isNull())
         return;
     const bool ComparingWords = compareComboBox->currentIndex() ==
                                 CompareWords;
@@ -1815,7 +1818,7 @@ void MainWindow::showZones(const int Width, const TextBoxList &list,
             columnsSpinBox->value());
     const int DPI = static_cast<int>(POINTS_PER_INCH *
             (zoomSpinBox->value() / 100.0));
-    QPixmap pixmap = label->pixmap()->copy();
+    QPixmap pixmap = label->pixmap().copy();
     QPainter painter(&pixmap);
     painter.setPen(Qt::green);
     for (int i = 0; i < paths.count(); ++i) {
@@ -1844,11 +1847,11 @@ void MainWindow::showMargins()
 
 void MainWindow::showMargins(QLabel *label)
 {
-    if (!label || !label->pixmap() || label->pixmap()->isNull())
+    if (!label || !label->pixmap() || label->pixmap().isNull())
         return;
     const int DPI = static_cast<int>(POINTS_PER_INCH *
                 (zoomSpinBox->value() / 100.0));
-    QPixmap pixmap = label->pixmap()->copy();
+    QPixmap pixmap = label->pixmap().copy();
     QPainter painter(&pixmap);
     painter.setPen(Qt::cyan);
     int left = leftMarginSpinBox->value();
@@ -1881,11 +1884,11 @@ void MainWindow::showMargins(QLabel *label)
 void MainWindow::setAMargin(const QPoint &pos)
 {
     if (!marginsGroupBox->isChecked() || !page1Label->pixmap() ||
-        page1Label->pixmap()->isNull())
+        page1Label->pixmap().isNull())
         return;
     const int DPI = static_cast<int>(POINTS_PER_INCH *
                 (zoomSpinBox->value() / 100.0));
-    const QSize &size = page1Label->pixmap()->size();
+    const QSize &size = page1Label->pixmap().size();
     int x = pos.x();
     int y = pos.y();
     const int HorizontalMiddle = size.width() / 2;

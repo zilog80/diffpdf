@@ -3,12 +3,9 @@
 <file alias="icon.png">images/icon.png</file>
 <file alias="left.png">images/left.png</file>
 <file alias="right.png">images/right.png</file>
-<file>diffpdf_cz.qm</file>
-<file>diffpdf_de.qm</file>
-<file>diffpdf_fr.qm</file>
-<file>help.html</file>
-<file>help_cz.html</file>
-<file>help_de.html</file>
-<file>help_fr.html</file>
+<file alias="help.html">help/help.html</file>
+<file alias="help_cz.html">help/help_cz.html</file>
+<file alias="help_de.html">help/help_de.html</file>
+<file alias="help_fr.html">help/help_fr.html</file>
 </qresource>
 </RCC>

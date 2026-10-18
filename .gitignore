@@ -21,3 +21,6 @@ Makefile
 *.qm
 diffpdf.app
 diffpdf-*.dmg
+
+# other
+.vscode

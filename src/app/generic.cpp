@@ -146,13 +146,12 @@ QPixmap penStyleSwatch(const Qt::PenStyle style, const QColor &color)
 }
 
 
-const TextBoxList getTextBoxes(PdfPage page, const QRectF &rect)
+const TextBoxList getTextBoxes(const PdfPage& page, const QRectF &rect)
 {
     TextBoxList boxes;
-    foreach (Poppler::TextBox *box, page->textList()) {
-        PdfTextBox box_ptr(box);
-        if (rect.isEmpty() || rect.contains(box_ptr->boundingBox()))
-            boxes.append(box_ptr);
+    for (auto& box : page->textList()) {
+        if (rect.isEmpty() || rect.contains(box->boundingBox()))
+            boxes.push_back(std::move(box));
     }
     return boxes;
 }

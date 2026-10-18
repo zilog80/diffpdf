@@ -152,7 +152,7 @@ void TextItems::debug(const int page, const int ToleranceY,
                                 .arg(file.errorString())));
     }
     QTextStream out(&file);
-    out.setCodec("UTF-8");
+    out.setEncoding(QStringConverter::Utf8);
     out << "Page #" << page << ": "
         << (ComparingWords ? "Words" : "Characters") << " mode\n";
     for (int i = 0; i < items.count(); ++i) {
@@ -160,7 +160,7 @@ void TextItems::debug(const int page, const int ToleranceY,
         const QRect rect = item.toRect();
         out << item.text;
         if (!ComparingWords)
-            out << QString(" %1").arg(item.text.at(0).unicode(), 4, 16,
+            out << QString(" %1").arg(static_cast<int>(item.text.at(0).unicode()), 4, 16,
                                       QChar('0'));
         if (Yx) {
             const int y = normalizedY(static_cast<int>(item.rect.y()),
@@ -185,7 +185,7 @@ inline int normalizedY(const int y, const int ToleranceY)
 const TextItems getWords(const TextBoxList &list)
 {
     TextItems items;
-    foreach (const PdfTextBox &box, list) {
+    for (const PdfTextBox &box : list) {
         QString word = box->text().trimmed();
         for (int i = 0; i < word.length(); ++i)
             word[i] = canonicalizedCharacter(word[i]);
@@ -200,7 +200,7 @@ const TextItems getWords(const TextBoxList &list)
 const TextItems getCharacters(const TextBoxList &list)
 {
     TextItems items;
-    foreach (const PdfTextBox &box, list) {
+    for (const PdfTextBox &box : list) {
         const QString word = box->text();
         int limit = word.count() - 1;
         for (int i = limit; i >= 0; --i)
