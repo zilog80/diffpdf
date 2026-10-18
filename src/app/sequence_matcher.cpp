@@ -136,7 +136,7 @@ QList<Match> SequenceMatcher::get_matching_blocks()
                 offsets.append(Offsets(i + k, a_high, j + k, b_high));
         }
     }
-    qSort(matching_blocks.begin(), matching_blocks.end(), matchLessThan);
+    std::sort(matching_blocks.begin(), matching_blocks.end(), matchLessThan);
 
     int i1 = 0;
     int j1 = 0;

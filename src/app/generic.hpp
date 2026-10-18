@@ -12,7 +12,7 @@
     for more details.
 */
 
-#include <poppler-qt4.h>
+#include <poppler-qt6.h>
 #include <QMetaType>
 #include <QPair>
 #include <QPixmap>
@@ -22,16 +22,11 @@ class QColor;
 class QMimeData;
 class QRectF;
 
-#if QT_VERSION >= 0x040600
-typedef QSharedPointer<Poppler::Document> PdfDocument;
-typedef QSharedPointer<Poppler::Page> PdfPage;
-typedef QSharedPointer<Poppler::TextBox> PdfTextBox;
-#else
-typedef std::tr1::shared_ptr<Poppler::Document> PdfDocument;
-typedef std::tr1::shared_ptr<Poppler::Page> PdfPage;
-typedef std::tr1::shared_ptr<Poppler::TextBox> PdfTextBox;
-#endif
-typedef QList<PdfTextBox> TextBoxList;
+
+typedef std::unique_ptr<Poppler::Document> PdfDocument;
+typedef std::unique_ptr<Poppler::Page> PdfPage;
+typedef std::unique_ptr<Poppler::TextBox> PdfTextBox;
+typedef std::vector<PdfTextBox> TextBoxList;
 
 enum InitialComparisonMode{CompareAppearance=0, CompareCharacters=1,
                            CompareWords=2};
@@ -50,9 +45,9 @@ struct PagePair
 
     bool isNull() { return left == -1 || right == -1; }
 
-    const int left;
-    const int right;
-    const bool hasVisualDifference;
+    int left;
+    int right;
+    bool hasVisualDifference;
 };
 Q_DECLARE_METATYPE(PagePair)
 
@@ -85,7 +80,7 @@ QPixmap colorSwatch(const QColor &color);
 QPixmap brushSwatch(const Qt::BrushStyle style, const QColor &color);
 QPixmap penStyleSwatch(const Qt::PenStyle style, const QColor &color);
 
-const TextBoxList getTextBoxes(PdfPage page, const QRectF &rect=QRect());
+const TextBoxList getTextBoxes(const PdfPage& page, const QRectF &rect=QRect());
 
 const QString strippedFilename(const QString &filename);
 const QStringList droppedFilenames(const QMimeData *mimeData);

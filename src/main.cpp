@@ -10,7 +10,7 @@
     for more details.
 */
 
-#include "mainwindow.hpp"
+#include "app/mainwindow.hpp"
 #include <QApplication>
 #include <QIcon>
 #include <QLibraryInfo>
@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("qtrac.eu");
     app.setApplicationName("DiffPDF");
     app.setWindowIcon(QIcon(":/icon.png"));
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
     QTextStream out(stdout);
     QStringList args = app.arguments().mid(1);
@@ -106,7 +105,7 @@ int main(int argc, char *argv[])
         QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
     QTranslator appTranslator;
-    appTranslator.load("diffpdf_" + language, ":/");
+    appTranslator.load("diffpdf_" + language, ":/i18n");
     app.installTranslator(&appTranslator);
 
     MainWindow window(debug, comparisonMode, filename1, filename2,
