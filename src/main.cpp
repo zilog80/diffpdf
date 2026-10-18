@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     QString language = QLocale::system().name();
     bool optionsOK = true;
     Debug debug = DebugOff;
-    foreach (const QString arg, args) {
+    for (const QString& arg : args) {
         if (optionsOK && (arg == "--appearance" || arg == "-a"))
             comparisonMode = CompareAppearance;
         else if (optionsOK && (arg == "--characters" || arg == "-c"))
@@ -101,12 +101,13 @@ int main(int argc, char *argv[])
     }
 
     QTranslator qtTranslator;
-    qtTranslator.load("qt_" + language,
-        QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&qtTranslator);
+    if (qtTranslator.load("qt_" + language, QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        app.installTranslator(&qtTranslator);
+    }
     QTranslator appTranslator;
-    appTranslator.load("diffpdf_" + language, ":/i18n");
-    app.installTranslator(&appTranslator);
+    if (appTranslator.load("diffpdf_" + language, ":/i18n")) {
+        app.installTranslator(&appTranslator);
+    }
 
     MainWindow window(debug, comparisonMode, filename1, filename2,
             language.left(2)); // We want de not de_DE etc.

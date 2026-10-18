@@ -1509,7 +1509,7 @@ MainWindow::Difference MainWindow::getTheDifference(const PdfPage& page1,
     const TextBoxList list2 = getTextBoxes(page2, rect);
     if (list1.size() != list2.size())
         return TextualDifference;
-    for (int i = 0; i < list1.size(); ++i)
+    for (std::size_t i = 0; i < list1.size(); ++i)
         if (list1[i]->text() != list2[i]->text())
             return TextualDifference;
 

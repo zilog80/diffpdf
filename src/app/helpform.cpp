@@ -30,10 +30,11 @@ HelpForm::HelpForm(const QString &language, QWidget *parent)
     if (!QFile::exists(filename))
         filename = ":/help.html";
     QFile file(filename);
-    file.open(QIODevice::ReadOnly|QIODevice::Text);
-    QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
-    viewer->setHtml(in.readAll());
+    if (file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+        QTextStream in(&file);
+        in.setEncoding(QStringConverter::Utf8);
+        viewer->setHtml(in.readAll());
+    }
     viewer->setReadOnly(true);
     setCentralWidget(viewer);
     (void) new QShortcut(QKeySequence("Escape"), this, SLOT(close()));
