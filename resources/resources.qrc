@@ -1,0 +1,14 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+<file alias="icon.png">images/icon.png</file>
+<file alias="left.png">images/left.png</file>
+<file alias="right.png">images/right.png</file>
+<file alias="diffpdf_cz.qm">tr/diffpdf_cz.qm</file>
+<file alias="diffpdf_de.qm">tr/diffpdf_de.qm</file>
+<file alias="diffpdf_fr.qm">tr/diffpdf_fr.qm</file>
+<file alias="help.html">help/help.html</file>
+<file alias="help_cz.html">help/help_cz.html</file>
+<file alias="help_de.html">help/help_de.html</file>
+<file alias="help_fr.html">help/help_fr.html</file>
+</qresource>
+</RCC>
