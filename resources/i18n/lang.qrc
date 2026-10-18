@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="/i18n">
+    <file>diffpdf_cz.qm</file>
+    <file>diffpdf_de.qm</file>
+    <file>diffpdf_es.qm</file>
+    <file>diffpdf_fr.qm</file>
+  </qresource>
+</RCC>
